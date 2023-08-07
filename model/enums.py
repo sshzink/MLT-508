@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PartOfSpeech(Enum):
+class POS(Enum):
     NOUN = 1
     VERB = 2
     ADJECTIVE = 3
@@ -12,7 +12,7 @@ class PartOfSpeech(Enum):
     INTERJECTION = 8
 
 
-class Language(Enum):
-    English = "en"
-    Spanish = "es"
-    French = "fr"
+class LANG(Enum):
+    en = "en"
+    es = "es"
+    fr = "fr"

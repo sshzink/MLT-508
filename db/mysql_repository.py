@@ -1,8 +1,10 @@
 from db.repository import *
 import mysql.connector
+from model.word import *
+from model.enums import *
 
 
-class MySQLRepository(AbstractRepository):
+class MySQLRepository(Lexicon):
     def __init__(self):
         super().__init__()
         config = {
@@ -16,50 +18,33 @@ class MySQLRepository(AbstractRepository):
         self.cursor = self.connection.cursor()
 
     def __del__(self):
-        self.cursor.close()
-        self.connection.close()
+        if hasattr(self, 'cursor') and self.cursor is not None:
+            self.cursor.close()
+        if hasattr(self, 'connection') and self.connection.is_connected():
+            self.connection.close()
 
-    def create_table(self):
-        create_table_query = (
-            "CREATE TABLE IF NOT EXISTS translations ("
-            "word VARCHAR(255) NOT NULL,"
-            "source_language VARCHAR(255) NOT NULL,"
-            "target_language VARCHAR(255) NOT NULL,"
-            "translation TEXT NOT NULL,"
-            "synonyms TEXT,"
-            "pos VARCHAR(50),"
-            "PRIMARY KEY (word, source_language)"
-            ")"
-        )
-        with self.connection.cursor() as cursor:
-            cursor.execute(create_table_query)
-        self.connection.commit()
+    def get_word_by_form(self, word_form, lang):
+        query = "SELECT * FROM words WHERE form = %s AND lang = %s"
+        params = (word_form, lang.value)  # Assuming lang is an Enum with a value attribute
+        cursor = self.connection.cursor(dictionary=True)
+        cursor.execute(query, params)
+        result = cursor.fetchone()
+        cursor.close()
 
-    def save_translation(self, word, source_language, target_language, translation, synonyms, pos):
-        with self.connection.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO translations (word, source_language, target_language, translation, synonyms, pos) "
-                "VALUES (%s, %s, %s, %s, %s, %s)",
-                (word, source_language, target_language, translation, synonyms, pos)
-            )
-        self.connection.commit()
+        if result:
+            return Word(**result)
+        else:
+            return None
 
-    def get_translation(self, word, source_language, target_language):
-        with self.connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT translation, synonyms, pos FROM translations WHERE word = %s AND source_language = %s AND target_language = %s",
-                (word, source_language, target_language)
-            )
-            result = cursor.fetchone()
-            if result:
-                translation, synonyms, pos = result
-                return {
-                    "translation": translation,
-                    "synonyms": synonyms.split(",") if synonyms else [],
-                    "pos": pos,
-                }
-            else:
-                return None
+    def get_word_by_id(self, word_id, lang):
+        query = "SELECT * FROM words WHERE id = %s AND lang = %s"
+        params = (word_id, lang.value)
+        cursor = self.connection.cursor(dictionary=True)
+        cursor.execute(query, params)
+        result = cursor.fetchone()
+        cursor.close()
 
-    def close_connection(self):
-        self.connection.close()
+        if result:
+            return Word(**result)
+        else:
+            return None
