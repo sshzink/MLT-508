@@ -25,16 +25,19 @@ class MySQLRepository(Lexicon):
 
     def get_word_by_form(self, word_form, lang):
         query = "SELECT * FROM words WHERE form = %s AND lang = %s"
-        params = (word_form, lang.value)  # Assuming lang is an Enum with a value attribute
+        params = (word_form, lang.value)
         cursor = self.connection.cursor(dictionary=True)
         cursor.execute(query, params)
         result = cursor.fetchone()
         cursor.close()
 
+        print(result)
+
         if result:
-            return Word(**result)
+            return Word(result['id'], result['form'], LANG(result['lang']), POS(result['pos']), result['eq_in_en'], result['eq_in_es'], result['eq_in_fr'])
         else:
             return None
+
 
     def get_word_by_id(self, word_id, lang):
         query = "SELECT * FROM words WHERE id = %s AND lang = %s"
@@ -45,6 +48,6 @@ class MySQLRepository(Lexicon):
         cursor.close()
 
         if result:
-            return Word(**result)
+            return Word(result['id'], result['form'], LANG(result['lang']), POS(result['pos']), result['eq_in_en'], result['eq_in_es'], result['eq_in_fr'])
         else:
             return None

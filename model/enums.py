@@ -13,6 +13,6 @@ class POS(Enum):
 
 
 class LANG(Enum):
-    en = "en"
-    es = "es"
-    fr = "fr"
+    ENGLISH = "en"
+    SPANISH = "es"
+    FRENCH = "fr"
