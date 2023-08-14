@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Translation Request Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        #translation-form {
+            width: 400px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #translation-result {
+            width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        #image-container {
+            float: left;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Multilingual Translator</h1>
+    <div id="image-container">
+        <img src="https://i.pinimg.com/originals/89/e4/3c/89e43ce18c83a0eae37a62eee764bd92.jpg" alt="Sample Image" width="200">
+    </div>
+    <form id="translation-form">
+        <label for="word">Word:</label>
+        <input type="text" id="word" name="word" required><br>
+
+        <label for="source_language">Source Language:</label>
+        <select id="source_language" name="source_language" required>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+        </select><br>
+
+        <label for="target_language">Target Language:</label>
+        <select id="target_language" name="target_language" required>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+        </select><br>
+
+        <input type="submit" value="Translate">
+    </form>
+
+    <div id="translation-result">
+    </div>
+
+    <script>
+        document.getElementById("translation-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const word = document.getElementById("word").value;
+            const sourceLanguage = document.getElementById("source_language").value;
+            const targetLanguage = document.getElementById("target_language").value;
+
+            const requestData = {
+                word: word,
+                source_language: sourceLanguage,
+                target_language: targetLanguage
+            };
+
+            fetch("http://localhost:5001/translate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById("translation-result");
+                if (data.translation) {
+                    resultDiv.innerHTML = `
+                        <p>Translation: ${data.translation}</p>
+                        <p>Part of Speech: ${data.pos}</p>
+                    `;
+                } else {
+                    resultDiv.textContent = "Translation not found";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>
+

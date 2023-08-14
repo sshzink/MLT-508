@@ -23,6 +23,6 @@ class Services:
         if translation_id:
             translation = self.repo.get_word_by_id(translation_id, target_language)
             if translation:
-                return f'{translation.form}, {pos.name}'
+                return {'translation': translation.form, 'pos': pos.name}
 
         return None

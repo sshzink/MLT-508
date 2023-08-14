@@ -34,7 +34,7 @@ class MySQLRepository(Lexicon):
         print(result)
 
         if result:
-            return Word(result['id'], result['form'], LANG(result['lang']), POS(result['pos']), result['eq_in_en'], result['eq_in_es'], result['eq_in_fr'])
+            return Word(**result)
         else:
             return None
 
@@ -48,6 +48,6 @@ class MySQLRepository(Lexicon):
         cursor.close()
 
         if result:
-            return Word(result['id'], result['form'], LANG(result['lang']), POS(result['pos']), result['eq_in_en'], result['eq_in_es'], result['eq_in_fr'])
+            return Word(**result)
         else:
             return None
