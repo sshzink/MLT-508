@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 
 from app.services import *
@@ -8,6 +8,11 @@ app = Flask(__name__)
 cors = CORS(app)
 
 services = Services()
+
+
+@app.route('/', methods=['GET'])
+def serve_form():
+    return render_template('web/mlt.html')
 
 
 @app.route('/translate', methods=['POST'])
