@@ -10,9 +10,9 @@ cors = CORS(app)
 services = Services()
 
 
-@app.route('/', methods=['GET'])
-def serve_form():
-    return render_template('web/mlt.html')
+#@app.route('/', methods=['GET'])
+#def serve_form():
+ #   return render_template('web/mlt.html')
 
 
 @app.route('/translate', methods=['POST'])

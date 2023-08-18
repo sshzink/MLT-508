@@ -3,6 +3,7 @@ from db.mysql_repository import *
 from db.repository import *
 from model.enums import *
 
+
 class Services:
     def __init__(self):
         self.repo = MySQLRepository()

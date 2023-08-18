@@ -2,6 +2,7 @@ import abc
 from model.enums import *
 from model.word import *
 
+
 class Lexicon(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
